@@ -3,4 +3,8 @@ class Section < ActiveRecord::Base
 
   has_many :enrollments
   has_many :students, through: :enrollments
+
+  def coursect
+    "#{course.name} #{section_number} #{semester}"
+  end
 end
