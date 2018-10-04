@@ -1,3 +1,3 @@
-class Section < ApplicationRecord
+class Section < ActiveRecord::Base
   belongs_to :course
 end
