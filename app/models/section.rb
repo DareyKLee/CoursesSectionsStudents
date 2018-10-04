@@ -1,4 +1,6 @@
 class Section < ActiveRecord::Base
+  validates :semester, :section_number, :room_number, presence: true  
+
   belongs_to :course
 
   has_many :enrollments
