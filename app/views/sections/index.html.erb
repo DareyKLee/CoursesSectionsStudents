@@ -2,6 +2,12 @@
 
 <h1>Sections</h1>
 
+<%= form_tag(search_sections_url, method: "get") do %>
+  <%= label_tag(:query, "Search for a section:") %>
+  <%= text_field_tag(:query) %>
+  <%= submit_tag("Search") %>
+<% end %>
+
 <table>
   <thead>
     <tr>
@@ -18,7 +24,7 @@
       <tr>
         <td><%= section.semester %></td>
         <td><%= section.section_number %></td>
-        <td><%= section.course %></td>
+        <td><%= section.course.name %></td>
         <td><%= section.room_number %></td>
         <td><%= link_to 'Show', section %></td>
         <td><%= link_to 'Edit', edit_section_path(section) %></td>

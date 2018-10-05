@@ -20,5 +20,26 @@
   <%= @course.credit_hours %>
 </p>
 
+<h2>Available Sections For <%= @course.name %></h2>
+<table>
+  <thead>
+    <tr>
+      <th>Section Number</th>
+      <th>Semester</th>
+      <th>Room Number</th>
+    </tr>
+  </thead>
+    
+  <tbody>
+    <% @course.sections.each do |section| %>
+      <tr>
+        <td><%= section.section_number %>
+	<td><%= section.semester %>
+	<td><%= section.room_number %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
 <%= link_to 'Edit', edit_course_path(@course) %> |
 <%= link_to 'Back', courses_path %>
