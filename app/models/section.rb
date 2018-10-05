@@ -1,5 +1,5 @@
 class Section < ActiveRecord::Base
-  validates :semester, :section_number, :room_number, presence: true  
+  validates :semester, :section_number, :room_number, :course_id, presence: true  
 
   belongs_to :course
 
