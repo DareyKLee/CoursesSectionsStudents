@@ -1,6 +1,11 @@
 class CoursesController < ApplicationController
   before_action :set_course, only: [:show, :edit, :update, :destroy]
 
+  def search
+    @courses = Course.where("name like?", "%#{params[:query]}%")
+    render :index
+  end
+
   # GET /courses
   # GET /courses.json
   def index

@@ -1,6 +1,11 @@
 class EnrollmentsController < ApplicationController
   before_action :set_enrollment, only: [:show, :edit, :update, :destroy]
 
+  def search
+    @enrollments = Enrollment.where("section_id like?", "%#{params[:query]}%")
+    render :index
+  end
+
   # GET /enrollments
   # GET /enrollments.json
   def index

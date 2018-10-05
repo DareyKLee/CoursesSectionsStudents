@@ -2,6 +2,12 @@
 
 <h1>Sections</h1>
 
+<%= form_tag(search_sections_url, method: "get") do %>
+  <%= label_tag(:query, "Search for a section:") %>
+  <%= text_field_tag(:query) %>
+  <%= submit_tag("Search") %>
+<% end %>
+
 <table>
   <thead>
     <tr>
