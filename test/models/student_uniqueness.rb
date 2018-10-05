@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CourseTest < ActiveSupport::TestCase
+class StudentTest < ActiveSupport::TestCase
   
   setup do
     Student.create(name:"Boris", id_number:880880880)
