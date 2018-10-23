@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  
+
+  root to:"courses#index"  
+
   resources :enrollments do
     collection do
       get 'search'
