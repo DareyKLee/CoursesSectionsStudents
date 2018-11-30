@@ -10,36 +10,135 @@
 <button onclick="fetch('enrollments',['section_id','student_id'])">Enrollments</button>
 <button onclick="fetch('students', ['name', 'id_number'])">Students</button>
 
+<p id="legend"></p>
+
 <div id="list">
 </div>
 
 <script>
+var done = 4, ok = 200;
+
 var l = document.getElementById("list");
 var clear = function() {
     while (l.firstChild) {
         l.removeChild(l.firstChild);
     }
 };
-var http_request = new XMLHttpRequest();
+
+//get course names for sections page
+var sections_page = function(fields) {
+	let course_http_request = new XMLHttpRequest();
+	course_http_request.open("GET", "http://localhost:3000/courses.json", true);
+	course_http_request.onreadystatechange = function () {
+		if (course_http_request.readyState === done && course_http_request.status === ok) {
+			jo_course = JSON.parse(course_http_request.responseText);	
+			let ol = document.createElement('ol');
+			l.appendChild(ol);
+			for (i in jo) {
+				let li = document.createElement('li');
+				for (f in fields) {
+					if (fields[f] === 'course_id') {
+						li.textContent += jo_course[jo[i][fields[f]] - 1]['name'] + ' ..... ';
+					} else {
+						li.textContent += jo[i][fields[f]] + ' ..... ';
+					}
+					ol.appendChild(li);
+				}
+			}
+		}	
+	}
+	course_http_request.send(null);
+}
+
+//get section details for enrollments page
+var enrollments_page_step_one = function(fields) {
+	let section_http_request = new XMLHttpRequest();
+	section_http_request.open("GET", "http://localhost:3000/sections.json", true);
+	section_http_request.onreadystatechange = function () {
+		if (section_http_request.readyState === done && section_http_request.status === ok) {
+			jo_section = JSON.parse(section_http_request.responseText);
+			enrollments_page_step_two(fields);
+		}
+	}
+	section_http_request.send(null);
+}
+
+//get course name for enrollments page
+var enrollments_page_step_two = function(fields) {
+	let course_http_request = new XMLHttpRequest();
+	course_http_request.open("GET", "http://localhost:3000/courses.json", true);
+	course_http_request.onreadystatechange = function () {
+		if (course_http_request.readyState === done && course_http_request.status === ok) {
+			jo_course = JSON.parse(course_http_request.responseText);
+			enrollments_page_step_three(fields);
+		}
+	}
+	course_http_request.send(null);
+}
+
+//get student name and format for enrollments page
+var enrollments_page_step_three = function(fields) {
+	let student_http_request = new XMLHttpRequest();
+	student_http_request.open("GET", "http://localhost:3000/students.json", true);
+	student_http_request.onreadystatechange = function () {
+		if (student_http_request.readyState === done && student_http_request.status === ok) {
+			jo_student = JSON.parse(student_http_request.responseText);
+			let ol = document.createElement('ol');
+			l.appendChild(ol);
+			for (i in jo) {
+				let li = document.createElement('li');
+				for (f in fields) {
+					if (fields[f] === 'section_id') {
+						li.textContent += jo_course[[jo_section[jo[i][fields[f]] - 1]['course_id']] - 1]['name'] + ' .... ';
+						li.textContent += jo_section[jo[i][fields[f]] - 1]['section_number'] + ' .... ';
+					}
+					
+					if (fields[f] === 'student_id') {
+						li.textContent += jo_student[jo[i][fields[f]] - 1]['name'] + ' .... ';
+					}
+					ol.appendChild(li);
+				}
+			}
+		}
+	}
+	student_http_request.send(null);
+}
+
 var fetch = function(which, fields) {
+	if (which === 'courses') {
+		document.getElementById("legend").innerHTML = "Course Name ..... Department ..... Course Number ..... Credit Hours";
+	} else if (which === 'sections') {
+		document.getElementById("legend").innerHTML = "Semester ..... Section Number ..... Course Name ..... Room Number";
+	} else if (which === 'enrollments') {
+		document.getElementById("legend").innerHTML = "Course Name ..... Section Number ..... Student Name";
+	} else if (which === 'students') {
+		document.getElementById("legend").innerHTML = "Student Name ..... Student ID";
+	}
+	
+	let http_request = new XMLHttpRequest();
     http_request.open("GET", "http://localhost:3000/" + which + ".json", true);
     http_request.onreadystatechange = function () {
-        let done = 4, ok = 200;
         if (http_request.readyState === done && http_request.status === ok) {
             clear();
-            let ol = document.createElement('ol');
-            l.appendChild(ol);
-            let jo = JSON.parse(http_request.responseText);
-            for (i in jo) {
-                let li = document.createElement('li');
-                for (f in fields) {
-                    li.textContent += jo[i][fields[f]] + ' ';
-                }
-                ol.appendChild(li);
-            }
-        }
-    }
-    http_request.send (null);
+			jo = JSON.parse(http_request.responseText);
+			if (which === 'sections') {
+				sections_page(fields);
+			} else if (which === 'enrollments') {
+				enrollments_page_step_one(fields);
+			} else {
+				let ol = document.createElement('ol');
+				l.appendChild(ol);
+				for (i in jo) {
+					let li = document.createElement('li');
+					for (f in fields) {
+						li.textContent += jo[i][fields[f]] + ' ..... ';
+					}
+					ol.appendChild(li);
+				}
+			}
+		}	
+	}
+	http_request.send (null);
 };
 </script>
 
